@@ -1,2 +1,7 @@
-server.port=8083
-spring.application.name=motorbike-service
+spring:
+  application:
+    name: motorbike-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8090
