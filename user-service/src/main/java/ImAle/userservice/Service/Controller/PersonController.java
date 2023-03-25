@@ -4,7 +4,9 @@ import ImAle.userservice.Entity.Person;
 import ImAle.userservice.Service.PersonService;
 import ImAle.userservice.Service.models.Car;
 import ImAle.userservice.Service.models.Motorbike;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,7 @@ public class PersonController {
     }
 
     // RestTemplate
+    @CircuitBreaker(name = "carCB", fallbackMethod = "fallbackGetCarsByPersonId")
     @GetMapping("/cars/{personId}")
     public ResponseEntity<List<Car>> getCarsByPersonId(@PathVariable("personId") int personId){
         Person person = personService.getPersonById(personId);
@@ -55,6 +58,7 @@ public class PersonController {
         return ResponseEntity.ok(cars);
     }
 
+    @CircuitBreaker(name = "motorbikeCB", fallbackMethod = "fallbackGetMotorbikesByPersonId")
     @GetMapping("/motorbikes/{personId}")
     public ResponseEntity<List<Motorbike>> getMotorbikesByPersonId(@PathVariable("personId") int personId){
         Person person = personService.getPersonById(personId);
@@ -66,12 +70,14 @@ public class PersonController {
     }
 
     // Feign Client
+    @CircuitBreaker(name = "carCB", fallbackMethod = "fallbackSaveCar")
     @PostMapping("/car/{personId}")
     public ResponseEntity<Car> saveCar(@PathVariable("personId") int personId, @RequestBody Car car){
         Car newCar = personService.saveCar(personId, car);
         return ResponseEntity.ok(newCar);
     }
 
+    @CircuitBreaker(name = "motorbikeCB", fallbackMethod = "fallbackSaveMotorbike")
     @PostMapping("/motorbike/{personId}")
     public ResponseEntity<Motorbike> saveMotorbike(@PathVariable("personId") int personId, @RequestBody Motorbike motorbike){
         Motorbike newMotorbike = personService.saveMotorbike(personId, motorbike);
@@ -96,9 +102,33 @@ public class PersonController {
         return ResponseEntity.ok(motorbikes);
     }
 
+    @CircuitBreaker(name = "allCB", fallbackMethod = "fallbackGetVehiclesByPersonId")
     @GetMapping("/vehicles/{personId}")
     public ResponseEntity<Map<String, Object>> getVehiclesByPersonId(@PathVariable("personId") int personId){
         Map<String, Object> result = personService.getVehiclesByPersonId(personId);
         return ResponseEntity.ok(result);
     }
+
+
+    // Fallbacks
+    private ResponseEntity<List<Car>> fallbackGetCarsByPersonId (@PathVariable("personId") int personId, RuntimeException e){
+        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    }
+
+    private ResponseEntity<Car> fallbackSaveCar (@PathVariable("personId") int personId, @RequestBody Car car, RuntimeException e){
+        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Motorbike>> fallbackGetMotorbikesByPersonId(@PathVariable("personId") int personId, RuntimeException e){
+        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    }
+
+    public ResponseEntity<Motorbike> fallbackSaveMotorbike(@PathVariable("personId") int personId, @RequestBody Motorbike motorbike, RuntimeException e){
+        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    }
+
+    public ResponseEntity<Map<String, Object>> fallbackGetVehiclesByPersonId(@PathVariable("personId") int personId, RuntimeException e){
+        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    }
+
 }
