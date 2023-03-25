@@ -29,12 +29,12 @@ public class PersonService {
 
     // RestTemplate
     public List<Car> getCarsByPersonId(int personId){
-        List<Car> cars = restTemplate.getForObject("http://localhost:8082/car/person/" + personId, List.class);
+        List<Car> cars = restTemplate.getForObject("http://car-service/car/person/" + personId, List.class);
         return cars;
     }
 
     public List<Motorbike> getMotorbikesByPersonId(int personId){
-        List<Motorbike> motorbikes = restTemplate.getForObject("http://localhost:8083/motorbike/person/" + personId, List.class);
+        List<Motorbike> motorbikes = restTemplate.getForObject("http://motorbike-service/motorbike/person/" + personId, List.class);
         return motorbikes;
     }
 
