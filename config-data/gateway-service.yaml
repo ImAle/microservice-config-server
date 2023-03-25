@@ -14,16 +14,4 @@ eureka:
         discovery:
           locator:
             enabled: true
-        routes:
-          - id: person-service
-            uri: lb://person-service
-            predicates:
-              - Path=/person/**
-          - id: car-service
-            uri: lb://car-service
-            predicates:
-              - Path=/car/**
-          - id: motorbike-service
-            uri: lb://motorbike-service
-            predicates:
-              - Path=/motorbike/**
+        routes: []
