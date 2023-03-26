@@ -111,24 +111,23 @@ public class PersonController {
 
 
     // Fallbacks
-    private ResponseEntity<List<Car>> fallbackGetCarsByPersonId (@PathVariable("personId") int personId, RuntimeException e){
-        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    private ResponseEntity<List<Car>> fallbackGetCarsByPersonId (@PathVariable("personId") int personId, Exception e){
+        return new ResponseEntity("Service is currently unavailable, please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
+    }
+    private ResponseEntity<Car> fallbackSaveCar (@PathVariable("personId") int personId, @RequestBody Car car, Exception e){
+        return new ResponseEntity("Service is currently unavailable, please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    private ResponseEntity<Car> fallbackSaveCar (@PathVariable("personId") int personId, @RequestBody Car car, RuntimeException e){
-        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    public ResponseEntity<List<Motorbike>> fallbackGetMotorbikesByPersonId(@PathVariable("personId") int personId, Exception e){
+        return new ResponseEntity("Service is currently unavailable, please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    public ResponseEntity<List<Motorbike>> fallbackGetMotorbikesByPersonId(@PathVariable("personId") int personId, RuntimeException e){
-        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    public ResponseEntity<Motorbike> fallbackSaveMotorbike(@PathVariable("personId") int personId, @RequestBody Motorbike motorbike, Exception e){
+        return new ResponseEntity("Service is currently unavailable, please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    public ResponseEntity<Motorbike> fallbackSaveMotorbike(@PathVariable("personId") int personId, @RequestBody Motorbike motorbike, RuntimeException e){
-        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
-    }
-
-    public ResponseEntity<Map<String, Object>> fallbackGetVehiclesByPersonId(@PathVariable("personId") int personId, RuntimeException e){
-        return new ResponseEntity("The data is now inaccessible. Please try later.", HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> fallbackGetVehiclesByPersonId(@PathVariable("personId") int personId, Exception e){
+        return new ResponseEntity("Service is currently unavailable, please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
 }
